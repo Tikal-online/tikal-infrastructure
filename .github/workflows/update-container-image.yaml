@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Update Container Image
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        required: true
+        description: A message describing why this workflow is being invoked
+      sha:
+        required: true
+        description: The short hash of the commit that invoked this workflow
+      application:
+        required: true
+        description: The application whose image should be updated
+        type: choice
+        options:
+          - bff
+          - identity
+          - tikal-backend
+          - tikal-frontend
+      image:
+        required: true
+        description: The new image
+
+jobs:
+  update-image-tag:
+    name: Update Image Tag
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Update image tags
+        env:
+          IMAGE: ${{ github.event.inputs.image }}
+          APP: ${{ github.event.inputs.application }}
+        run: |
+          DEPLOYMENT="app/${APP}/deployment.yaml"
+          MIGRATION="app/${APP}/migration.yaml"
+
+          yq e -i '.spec.template.spec.containers[0].image = strenv(IMAGE)' "$DEPLOYMENT"
+
+          if [[ -f "$MIGRATION" ]]; then
+            echo "migration.yaml found for $APP, updating image tag"
+            yq e -i '.spec.template.spec.containers[0].image = strenv(IMAGE)' "$MIGRATION"
+          else
+            echo "No migration.yaml for $APP, skipping"
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        id: cpr
+        with:
+          title: ${{github.event.inputs.message}}
+          branch: update-image-${{github.event.inputs.sha}}
+          commit-message: "chore(${{ github.event.inputs.application }}): update image tag to ${{github.event.inputs.image}}"
+
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
