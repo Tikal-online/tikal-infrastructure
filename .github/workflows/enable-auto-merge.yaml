@@ -3,16 +3,12 @@
 name: Enable Auto Merge
 on: pull_request
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   enable-auto-merge:
     name: Enable auto merge 
     runs-on: ubuntu-24.04
     steps:
       - name: Enable Pull Request Automerge
-        run: gh pr merge --merge --auto ${{ github.event.pull_request.number }}
+        run: gh pr merge --squash --auto ${{ github.event.pull_request.number }} --repo "${{ github.repository }}"
         env:
           GH_TOKEN: ${{ secrets.AUTOMERGE_PAT }}
