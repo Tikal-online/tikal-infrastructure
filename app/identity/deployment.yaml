@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity
+  template:
+    metadata:
+      labels:
+        app: identity
+    spec:
+      containers:
+        - name: identity
+          image: fmahdi09/identity:1.12.1
+          envFrom:
+            - configMapRef:
+                name: identity-config
+          env:
+            - name: Database__Port
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-cluster-app
+                  key: port
+            - name: Database__Username
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-cluster-app
+                  key: username
+            - name: Database__Password
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-cluster-app
+                  key: password
+            - name: Duende__LicenseKey
+              valueFrom:
+                secretKeyRef:
+                  name: duende-license-key
+                  key: key
+            - name: Client__Secret
+              valueFrom:
+                secretKeyRef:
+                  name: client-secret
+                  key: secret

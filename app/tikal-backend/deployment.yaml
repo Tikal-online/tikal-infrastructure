@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tikal-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tikal-backend
+  template:
+    metadata:
+      labels:
+        app: tikal-backend
+    spec:
+      containers:
+        - name: tikal-backend
+          image: fmahdi09/tikal-backend:0.26.3
+          envFrom:
+            - configMapRef:
+                name: tikal-backend-config
+          env:
+            - name: Database__Port
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-cluster-app
+                  key: port
+            - name: Database__Username
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-cluster-app
+                  key: username
+            - name: Database__Password
+              valueFrom:
+                secretKeyRef:
+                  name: cnpg-cluster-app
+                  key: password
+            - name: Identity__Secret
+              valueFrom:
+                secretKeyRef:
+                  name: client-secret
+                  key: secret

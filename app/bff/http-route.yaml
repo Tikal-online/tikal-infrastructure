@@ -1,0 +1,22 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: bff-route
+  namespace: bff
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: kube-system
+
+  hostnames:
+    - api.tikalonline.com
+
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+
+      backendRefs:
+        - name: bff
+          port: 80

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tikal-backend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Tikal-online/tikal-infrastructure.git
+    targetRevision: main
+    path: app/tikal-backend
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tikal-backend
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

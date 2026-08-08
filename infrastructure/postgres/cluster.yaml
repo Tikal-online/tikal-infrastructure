@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-cluster
+  namespace: cnpg-cluster
+spec:
+  inheritedMetadata:
+    annotations:
+      k8s.grafana.com/scrape: "true"
+      k8s.grafana.com/metrics.portNumber: "9187"
+      k8s.grafana.com/metrics.path: "/metrics"
+      k8s.grafana.com/job: "cnpg/pg-cluster"
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "bff,identity,tikal-backend"
+
+  instances: 1
+
+  storage:
+    size: 50Gi
+    storageClass: local-path
+
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: "1"
+    limits:
+      memory: 4Gi
+      cpu: "2"
+
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: 1GB
+      effective_cache_size: 3GB
+      work_mem: 16MB
+      maintenance_work_mem: 256MB
+      wal_buffers: 16MB
+      max_wal_size: 2GB

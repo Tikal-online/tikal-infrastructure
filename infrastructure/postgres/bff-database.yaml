@@ -1,0 +1,9 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: bff-database
+spec:
+  name: bff
+  owner: app
+  cluster:
+    name: cnpg-cluster
