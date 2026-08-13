@@ -12,7 +12,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: fmahdi09/identity:1.12.1
+          image: fmahdi09/identity:1.12.3
           args: ["migrate"]
           envFrom:
             - configMapRef:
