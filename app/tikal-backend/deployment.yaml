@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tikal-backend
-          image: fmahdi09/tikal-backend:0.30.0
+          image: fmahdi09/tikal-backend:0.31.0
           envFrom:
             - configMapRef:
                 name: tikal-backend-config
