@@ -12,7 +12,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: fmahdi09/tikal-backend:0.34.1
+          image: fmahdi09/tikal-backend:0.35.0
           args: ["migrate"]
           envFrom:
             - configMapRef:
