@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: identity
-          image: fmahdi09/identity:1.12.6
+          image: fmahdi09/identity:1.12.7
           envFrom:
             - configMapRef:
                 name: identity-config
