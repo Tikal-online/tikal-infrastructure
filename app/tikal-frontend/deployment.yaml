@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: tikal-frontend
-          image: fmahdi09/tikal-frontend:1.35.0
+          image: fmahdi09/tikal-frontend:1.36.0
